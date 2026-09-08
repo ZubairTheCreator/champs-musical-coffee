@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zubairthecreator.github.io/champs-musical-coffee/sitemap.xml

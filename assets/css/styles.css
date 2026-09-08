@@ -1,0 +1,437 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ==========================================================================
+   Champs Musical Coffee Shop Productions
+   Palette is the client's: coffee brown, banana yellow, cream white.
+   One ground, one ink, one accent, two neutrals. Nothing else.
+   ========================================================================== */
+
+:root {
+  /* colour */
+  --ground:        #241610;   /* espresso — the ground */
+  --ground-lift:   #312016;   /* one step up, for surfaces on the ground */
+  --ink:           #F7F0E1;   /* cream — the ink */
+  --accent:        #F2C14E;   /* banana — CTA / active only, never decoration */
+  --accent-press:  #D9A930;
+  --coffee:        #6B4A31;   /* neutral 1 — surfaces, dividers, text on cream */
+  --taupe:         #A79683;   /* neutral 2 — small text on the GROUND only.
+                                 Does not pass AA on cream. Never used there. */
+
+  /* type */
+  --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --text:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* scale contrast is the whole design: enormous display, small everything else */
+  --fs-mega:   clamp(3.25rem, 11vw, 9.5rem);
+  --fs-h1:     clamp(2.6rem, 7.5vw, 6rem);
+  --fs-h2:     clamp(2rem, 4.6vw, 3.6rem);
+  --fs-h3:     clamp(1.25rem, 1.9vw, 1.6rem);
+  --fs-body:   1rem;
+  --fs-small:  0.8125rem;
+
+  /* space */
+  --gutter:  clamp(1.25rem, 5vw, 6rem);
+  --section: clamp(5.5rem, 13vh, 11rem);
+  --measure: 62ch;
+
+  --radius: 2px;
+  --ease:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --slow:   900ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+}
+/* Scale contrast is the design. Set it explicitly — never inherit the
+   browser's 2em/1.5em defaults, which flatten the whole relationship. */
+h1 { font-size: var(--fs-h1); margin-bottom: 1.75rem; }
+h2 { font-size: var(--fs-h2); margin-bottom: 1.5rem; }
+h3 { font-size: var(--fs-h3); }
+
+p { margin: 0 0 1.15rem; max-width: var(--measure); }
+
+/* -------------------------------------------------------------------------
+   Skip link + focus. Visible focus everywhere, no exceptions.
+   ------------------------------------------------------------------------- */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 999;
+  background: var(--accent); color: var(--ground);
+  padding: 0.75rem 1.25rem; font-weight: 600;
+}
+.skip:focus { left: 0; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* -------------------------------------------------------------------------
+   Header / nav. Current page or in-view section is highlighted.
+   ------------------------------------------------------------------------- */
+.site-head {
+  position: fixed; inset: 0 0 auto 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem var(--gutter);
+  background: color-mix(in srgb, var(--ground) 82%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.0625rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.1;
+}
+.wordmark span { color: var(--accent); }
+
+.nav { display: flex; align-items: center; gap: clamp(0.9rem, 2.2vw, 2rem); }
+
+.nav a {
+  position: relative;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: var(--fs-small);
+  font-weight: 400;
+  padding: 0.35rem 0;
+}
+/* underline wipes in from the left */
+.nav a::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  height: 1px; width: 100%;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 420ms var(--ease);
+}
+.nav a:hover::after,
+.nav a:focus-visible::after { transform: scaleX(1); }
+.nav a[aria-current="page"] { color: var(--accent); }
+.nav a[aria-current="page"]::after { transform: scaleX(1); }
+
+.nav-call {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius);
+}
+.nav-call::after { display: none; }
+
+@media (max-width: 640px) {
+  .site-head { padding: 0.8rem 1.25rem; }
+  .wordmark { font-size: 0.875rem; white-space: nowrap; flex-shrink: 0; }
+  .nav { gap: 0.8rem; }
+  .nav a { white-space: nowrap; }
+  .nav a:not(.nav-call) { font-size: 0.78rem; }
+  /* The wordmark is the way home; the Home link is dead weight at this width. */
+  .nav a:first-child { display: none; }
+  .nav-call { padding: 0.4rem 0.65rem; font-size: 0.75rem; }
+  .nav-mob-hide { display: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Buttons. Magnetic drift is applied by JS via --mx/--my.
+   ------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--text); font-size: 0.9375rem; font-weight: 600;
+  padding: 0.95rem 1.6rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transform: translate(var(--mx, 0px), var(--my, 0px));
+  transition: transform 500ms var(--ease), background-color 260ms var(--ease), color 260ms var(--ease);
+}
+.btn-primary { background: var(--accent); color: var(--ground); }
+.btn-primary:hover { background: var(--accent-press); }
+.btn-ghost { border-color: color-mix(in srgb, var(--ink) 42%, transparent); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--ink); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; }
+
+/* text link: underline wipe from left */
+.link {
+  color: var(--ink);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+}
+.link::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 1px; background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 420ms var(--ease);
+}
+.link:hover::after, .link:focus-visible::after { transform: scaleX(1); }
+
+/* -------------------------------------------------------------------------
+   Section shell. Every section is its own composition with a hard boundary.
+   ------------------------------------------------------------------------- */
+.band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: var(--section) var(--gutter);
+  min-height: 84vh;
+  display: flex; align-items: center;
+}
+.band--tall { min-height: 100svh; }
+.band--flat { background: var(--ground); }
+.band--lift { background: var(--ground-lift); }
+
+/* full-bleed background image, parallax-shifted by JS via --py */
+.band__bg {
+  position: absolute; inset: -12% 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: center;
+  transform: translate3d(0, var(--py, 0px), 0);
+  will-change: transform;
+}
+/* the scrim. Legibility over atmosphere: if a heading is hard to read,
+   the scrim is wrong, not the heading. */
+.band__scrim {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--ground) 94%, transparent) 0%, color-mix(in srgb, var(--ground) 74%, transparent) 38%, color-mix(in srgb, var(--ground) 18%, transparent) 72%, transparent 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ground) 42%, transparent) 0%, transparent 26%, transparent 74%, color-mix(in srgb, var(--ground) 42%, transparent) 100%);
+}
+@media (max-width: 780px) {
+  .band__scrim {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--ground) 82%, transparent) 0%, color-mix(in srgb, var(--ground) 58%, transparent) 55%, color-mix(in srgb, var(--ground) 88%, transparent) 100%);
+  }
+}
+
+.band__inner { position: relative; z-index: 2; width: 100%; max-width: 1240px; margin: 0 auto; }
+.band__col { max-width: 52ch; }
+
+/* foreground cut-out: arrives from its nearest edge, pins, then fades + blurs */
+.cutout {
+  position: absolute; z-index: 1;
+  pointer-events: none; user-select: none;
+  width: clamp(230px, 34vw, 520px);
+  opacity: 0;
+  filter: blur(14px);
+  transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease), filter var(--slow) var(--ease);
+}
+.cutout--right  { right: clamp(-3rem, -1vw, 1rem); bottom: -8%; transform: translateX(22%) scale(0.97); }
+.cutout--left   { left:  clamp(-4rem, -2vw, 0rem); bottom: -12%; transform: translateX(-22%) scale(0.97); }
+.band.is-active .cutout { opacity: 1; filter: blur(0); transform: translateX(0) scale(1); }
+
+@media (max-width: 780px) {
+  .cutout { width: clamp(180px, 52vw, 300px); opacity: 0.42; }
+  .band.is-active .cutout { opacity: 0.42; }
+}
+
+/* -------------------------------------------------------------------------
+   Line-mask reveal: whole lines rise from behind a mask. Never per-word.
+   ------------------------------------------------------------------------- */
+/* The mask must clear descenders, or "properly" loses its y. */
+.lines > * {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.lines .ln {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1000ms var(--ease);
+}
+.is-active .lines .ln { transform: translateY(0); }
+.is-active .lines .ln:nth-child(2) { transition-delay: 90ms; }
+.is-active .lines .ln:nth-child(3) { transition-delay: 180ms; }
+
+.rise {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 800ms var(--ease), transform 800ms var(--ease);
+}
+.is-active .rise { opacity: 1; transform: none; }
+.is-active .rise-1 { transition-delay: 220ms; }
+.is-active .rise-2 { transition-delay: 320ms; }
+.is-active .rise-3 { transition-delay: 420ms; }
+
+/* -------------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------------- */
+.hero h1 { font-size: var(--fs-mega); }
+.hero .standfirst {
+  font-size: var(--fs-h3);
+  font-weight: 300;
+  color: var(--ink);
+  max-width: 34ch;
+  margin-top: 1.75rem;
+  line-height: 1.4;
+}
+.hero .where {
+  font-size: var(--fs-small);
+  color: var(--taupe);
+  margin: 0 0 1.5rem;
+  letter-spacing: 0.01em;
+}
+
+/* Title sequence: a curtain wipe clears, then the lines rise.
+   Plays once per browser session (sessionStorage), never on return scroll. */
+.curtain {
+  position: absolute; inset: 0; z-index: 6;
+  background: var(--ground);
+  transform-origin: top;
+  pointer-events: none;
+}
+.seq .curtain { animation: curtain 1150ms var(--ease) 120ms forwards; }
+.no-seq .curtain { display: none; }
+@keyframes curtain { to { transform: scaleY(0); } }
+
+.seq .hero__media { animation: settle 2600ms var(--ease) forwards; }
+@keyframes settle { from { transform: scale(1.08); } to { transform: scale(1); } }
+
+/* -------------------------------------------------------------------------
+   Cards. The frame never moves; the image scales inside it.
+   ------------------------------------------------------------------------- */
+.grid {
+  display: grid; gap: clamp(1rem, 2.4vw, 2rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.card {
+  background: color-mix(in srgb, var(--ground-lift) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 2.6vw, 2.25rem);
+  transition: transform 520ms var(--ease), border-color 380ms var(--ease);
+}
+.card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.card h3 { font-size: var(--fs-h3); margin-bottom: 0.75rem; }
+.card p { font-size: 0.9375rem; color: var(--taupe); margin-bottom: 0; }
+.card .link { display: inline-block; margin-top: 1.15rem; font-size: var(--fs-small); font-weight: 500; }
+
+/* image tile: fixed frame, image scales inside */
+.tile {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 5;
+  background: var(--ground-lift);
+  transition: transform 520ms var(--ease);
+}
+.tile img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 900ms var(--ease);
+}
+.tile:hover { transform: translateY(-6px); }
+.tile:hover img { transform: scale(1.07); }
+.tile figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 2.5rem 1.1rem 1rem;
+  font-size: var(--fs-small);
+  color: var(--ink);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ground) 92%, transparent));
+}
+
+/* -------------------------------------------------------------------------
+   Facts / contact rows
+   ------------------------------------------------------------------------- */
+.facts { list-style: none; padding: 0; margin: 2.25rem 0 0; display: grid; gap: 1.4rem; }
+.facts dt, .facts .k {
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--taupe); margin-bottom: 0.3rem;
+}
+.facts dd, .facts .v { margin: 0; font-size: 1.0625rem; color: var(--ink); }
+.facts a { color: var(--ink); }
+
+.map-frame {
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 16 / 11;
+  background: var(--ground-lift);
+}
+.map-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+.split {
+  display: grid; gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  align-items: start;
+}
+
+.rating {
+  display: inline-flex; align-items: baseline; gap: 0.5rem;
+  font-size: var(--fs-small); color: var(--taupe);
+  margin-top: 1.75rem;
+}
+.rating b { font-family: var(--display); font-size: 1.5rem; color: var(--accent); font-weight: 900; }
+
+/* -------------------------------------------------------------------------
+   Footer. Every link goes somewhere real.
+   ------------------------------------------------------------------------- */
+.site-foot {
+  background: var(--ground);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  padding: clamp(3.5rem, 7vw, 5.5rem) var(--gutter) 2rem;
+}
+.foot-grid {
+  max-width: 1240px; margin: 0 auto;
+  display: grid; gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+}
+.foot-grid h2 {
+  font-family: var(--text); font-weight: 600;
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--taupe); margin-bottom: 1rem;
+}
+.foot-grid ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+.foot-grid a { color: var(--ink); text-decoration: none; font-size: 0.9375rem; }
+.foot-grid a:hover { color: var(--accent); }
+.foot-grid address { font-style: normal; font-size: 0.9375rem; color: var(--taupe); line-height: 1.7; }
+.foot-base {
+  max-width: 1240px; margin: 3rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; justify-content: space-between;
+  font-size: var(--fs-small); color: var(--taupe);
+}
+
+/* -------------------------------------------------------------------------
+   Reduced motion: every element sits in its final position immediately and
+   the complete reading experience survives. Nothing is hidden behind an
+   animation that never plays.
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .cutout { opacity: 1 !important; filter: none !important; transform: none !important; }
+  .lines .ln { transform: none !important; }
+  .rise { opacity: 1 !important; transform: none !important; }
+  .band__bg { transform: none !important; }
+  .curtain { display: none !important; }
+}
