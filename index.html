@@ -51,7 +51,8 @@
     "itemListElement": [
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Coffee shop" } },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Coffee catering" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Coffee product reselling" } }
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Coffee product reselling" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Barista training and certification" } }
     ]
   }
 }
@@ -75,20 +76,37 @@
 
 <main id="main">
 
-  <!-- HERO. Background photography pending from the client: no photograph of
-       the shop exists yet. Built on flat ground + a real cut-out rather than
-       a stock image of somebody else's cafe. -->
-  <section class="band band--tall band--flat hero" id="top">
+  <!-- HERO. Home page only: the animated logo clip carries the section, so
+       there is no background photograph here and no cut-out. The clip is a
+       square on black; it is masked to its logo disc and multiplied with the
+       cream ground so the artwork reads as if drawn onto the page. The disc
+       starts centred and glides right, the copy rises in on the left once the
+       clip is ready, and the pour tail loops for good. See assets/js/site.js. -->
+  <section class="band band--tall band--flat hero hero--video" id="top">
     <div class="curtain" aria-hidden="true"></div>
-    <img class="cutout cutout--right hero__media"
-         src="assets/img/champs-hand-holding-coffee-cup-cutout.webp"
-         alt="A hand holding a black takeaway cup of Champs coffee with a bird and leaf poured into the crema"
-         width="1230" height="1278" loading="eager" decoding="async">
     <div class="band__inner">
+      <div class="hero__media" aria-hidden="true">
+        <div class="hero__disc">
+          <!-- Two clips, not one seek. The source has a single keyframe at
+               frame 0, so seeking back to the tail would re-decode 96 frames
+               and stall on every repeat. Instead the pour plays once and
+               hands over to a 25-frame cut of its own ending, which loops
+               natively from its own zero. Nothing ever seeks. -->
+          <video class="hero__video hero__video--pour" muted playsinline preload="auto"
+                 poster="assets/img/champs-logo-pour-poster.webp"
+                 width="960" height="960">
+            <source src="assets/video/champs-logo-pour.mp4" type="video/mp4">
+          </video>
+          <video class="hero__video hero__video--tail" muted playsinline preload="auto" loop
+                 poster="assets/img/champs-logo-pour-tail-poster.webp"
+                 width="960" height="960">
+            <source src="assets/video/champs-logo-pour-tail.mp4" type="video/mp4">
+          </video>
+          <div class="hero__tint"></div>
+        </div>
+      </div>
       <div class="band__col">
-        <p class="where">Eerste River, Cape Town</p>
-        <h1 class="lines"><span><span class="ln">Coffee poured</span></span><span><span class="ln">properly.</span></span></h1>
-        <p class="standfirst rise rise-1">A coffee shop in Forest Glade, and a coffee bar we bring to your event anywhere from Eerste River to Franschhoek.</p>
+        <h1 class="lines"><span><span class="ln">Enjoy the cup</span></span><span><span class="ln">that fills your soul</span></span></h1>
         <div class="btn-row rise rise-2">
           <a class="btn btn-primary" href="tel:+27614956539">Call 061 495 6539</a>
           <a class="btn btn-ghost" href="contact.html">Find the shop</a>
@@ -99,43 +117,42 @@
 
   <!-- WHAT WE DO -->
   <section class="band band--lift" id="what">
-    <img class="cutout cutout--left"
-         src="assets/img/champs-coffee-mug-cutout.webp"
-         alt="A ceramic mug of Champs cappuccino dusted with cinnamon"
-         width="1400" height="1073" loading="lazy" decoding="async">
+    <img class="cutout cutout--bottom" src="assets/img/champs-cappuccino-macro-cutout@2x.webp"
+         alt="" aria-hidden="true" width="2196" height="2800" loading="lazy" decoding="async">
     <div class="band__inner">
       <div class="band__col">
-        <h2 class="lines"><span><span class="ln">Three things,</span></span><span><span class="ln">done well.</span></span></h2>
+        <h2 class="lines"><span><span class="ln">Four things,</span></span><span><span class="ln">done well.</span></span></h2>
         <p class="rise rise-1">We have been pouring in Eerste River since 2015. The shop is the heart of it; the catering bar and the retail side grew out of people asking whether they could have it somewhere else, or at home.</p>
       </div>
       <div class="grid">
-        <article class="card rise rise-1">
+        <a class="card rise rise-1" href="services.html#shop">
           <h3>The coffee shop</h3>
           <p>Espresso, flat whites, cappuccinos and mochas, poured to order at 5 Cabral Street, Forest Glade. Sit in, or take it with you.</p>
-          <a class="link" href="services.html#shop">More about the shop</a>
-        </article>
-        <article class="card rise rise-2">
+          <span class="link">More about the shop</span>
+        </a>
+        <a class="card rise rise-2" href="services.html#catering">
           <h3>Coffee catering</h3>
           <p>We bring the bar to you. Weddings, church mornings, corporate events and functions, across the northern suburbs and the winelands.</p>
-          <a class="link" href="services.html#catering">More about catering</a>
-        </article>
-        <article class="card rise rise-3">
+          <span class="link">More about catering</span>
+        </a>
+        <a class="card rise rise-3" href="services.html#products">
           <h3>Coffee products</h3>
           <p>We resell coffee products, so the cup you liked here is one you can make at home. Ask us at the counter or over the phone.</p>
-          <a class="link" href="services.html#products">More about products</a>
-        </article>
+          <span class="link">More about products</span>
+        </a>
+        <a class="card rise rise-4" href="services.html#training">
+          <h3>Barista training</h3>
+          <p>Learn the machine, the grind and the pour from the people who do it every day, and walk away certified. Contact the owner to arrange it.</p>
+          <span class="link">More about training</span>
+        </a>
       </div>
     </div>
   </section>
 
   <!-- WHERE WE POUR -->
   <section class="band" id="where">
-    <div class="band__bg" style="background-image:url('assets/img/champs-takeaway-coffee-catering-venue.jpg'); background-position: center 16%;"></div>
-    <div class="band__scrim"></div>
-    <img class="cutout cutout--right"
-         src="assets/img/champs-mocha-cup-cutout.webp"
-         alt="A takeaway cup of Champs mocha with a leaf poured into the foam"
-         width="1230" height="1278" loading="lazy" decoding="async">
+    <!-- image: awaiting placement -->
+    <!-- image: awaiting placement -->
     <div class="band__inner">
       <div class="band__col">
         <h2 class="lines"><span><span class="ln">We travel</span></span><span><span class="ln">for this.</span></span></h2>
@@ -150,10 +167,7 @@
 
   <!-- WHAT PEOPLE SAY -->
   <section class="band band--flat" id="reviews">
-    <img class="cutout cutout--left"
-         src="assets/img/champs-cappuccino-macro-cutout.webp"
-         alt="Close crop of a Champs cappuccino, cinnamon dusted over the milk"
-         width="1098" height="1400" loading="lazy" decoding="async">
+    <!-- image: awaiting placement -->
     <div class="band__inner">
       <div class="band__col">
         <h2 class="lines"><span><span class="ln">4.8 on</span></span><span><span class="ln">Google.</span></span></h2>
@@ -161,22 +175,6 @@
         <p class="rating rise rise-2"><b>4.8</b> <span>rated on Google</span></p>
         <div class="btn-row rise rise-3">
           <a class="btn btn-ghost" href="https://www.google.com/maps/place/Champs+Musical+Coffee+Shop+Productions/@-34.0004982,18.7189143,17z" rel="noopener">Read the reviews on Google</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT CTA -->
-  <section class="band band--lift" id="visit">
-    <div class="band__bg" style="background-image:url('assets/img/champs-latte-art-cafe-window-eerste-river.jpg'); background-position: center 26%;"></div>
-    <div class="band__scrim"></div>
-    <div class="band__inner">
-      <div class="band__col">
-        <h2 class="lines"><span><span class="ln">Come and</span></span><span><span class="ln">have one.</span></span></h2>
-        <p class="rise rise-1">5 Cabral Street, Forest Glade, Eerste River, 7100. Phone us before you drive out, and we will tell you what is on.</p>
-        <div class="btn-row rise rise-2">
-          <a class="btn btn-primary" href="tel:+27614956539">Call 061 495 6539</a>
-          <a class="btn btn-ghost" href="contact.html">Directions and map</a>
         </div>
       </div>
     </div>
@@ -210,6 +208,7 @@
         <li><a href="services.html#shop">Coffee shop</a></li>
         <li><a href="services.html#catering">Coffee catering</a></li>
         <li><a href="services.html#products">Coffee products</a></li>
+        <li><a href="services.html#training">Barista training</a></li>
       </ul>
     </div>
     <div>

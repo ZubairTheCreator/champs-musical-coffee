@@ -14,6 +14,8 @@
   --accent:        #F2C14E;   /* banana — CTA / active only, never decoration */
   --accent-press:  #D9A930;
   --coffee:        #6B4A31;   /* neutral 1 — surfaces, dividers, text on cream */
+  --coffee-deep:   #3E2617;   /* the same brown, pressed down: headings on cream */
+  --cream-ground:  #FFFDD0;   /* the logo clip's own white, used as the video hero's ground */
   --taupe:         #A79683;   /* neutral 2 — small text on the GROUND only.
                                  Does not pass AA on cream. Never used there. */
 
@@ -53,6 +55,20 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Site-wide wallpaper: beans on wood, scrolling with the page behind every
+   page, under a coffee brown tint heavy enough that cream ink keeps its
+   contrast. Absolute (not fixed) so it travels with the content, sized to the
+   full width and tiled down the document. */
+body { position: relative; }
+body::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -10;
+  background:
+    linear-gradient(color-mix(in srgb, var(--coffee) 35%, transparent), color-mix(in srgb, var(--coffee) 35%, transparent)),
+    linear-gradient(color-mix(in srgb, var(--ground) 78%, transparent), color-mix(in srgb, var(--ground) 78%, transparent)),
+    url('../img/champs-beans-wood-wallpaper.webp') top center / 100% auto repeat-y var(--ground);
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -95,7 +111,7 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
   position: fixed; inset: 0 0 auto 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   gap: 1rem;
-  padding: 1.1rem var(--gutter);
+  padding: 0.7rem var(--gutter);
   background: color-mix(in srgb, var(--ground) 82%, transparent);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
@@ -104,7 +120,7 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 .wordmark {
   font-family: var(--display);
   font-weight: 900;
-  font-size: 1.0625rem;
+  font-size: 1.75rem;
   letter-spacing: -0.02em;
   color: var(--ink);
   text-decoration: none;
@@ -112,13 +128,17 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 }
 .wordmark span { color: var(--accent); }
 
-.nav { display: flex; align-items: center; gap: clamp(0.9rem, 2.2vw, 2rem); }
+.nav {
+  display: flex; align-items: center; justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: clamp(0.9rem, 2.2vw, 2rem);
+}
 
 .nav a {
   position: relative;
   color: var(--ink);
   text-decoration: none;
-  font-size: var(--fs-small);
+  font-size: 1.0625rem;
   font-weight: 400;
   padding: 0.35rem 0;
 }
@@ -143,16 +163,22 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 }
 .nav-call::after { display: none; }
 
-@media (max-width: 640px) {
-  .site-head { padding: 0.8rem 1.25rem; }
-  .wordmark { font-size: 0.875rem; white-space: nowrap; flex-shrink: 0; }
-  .nav { gap: 0.8rem; }
+@media (max-width: 900px) {
+  .site-head { padding: 0.55rem 1.25rem; }
+  .wordmark { font-size: 1.25rem; white-space: nowrap; flex-shrink: 0; }
+  .nav { gap: 0.9rem; }
   .nav a { white-space: nowrap; }
-  .nav a:not(.nav-call) { font-size: 0.78rem; }
+  .nav a:not(.nav-call) { font-size: 0.95rem; }
   /* The wordmark is the way home; the Home link is dead weight at this width. */
   .nav a:first-child { display: none; }
-  .nav-call { padding: 0.4rem 0.65rem; font-size: 0.75rem; }
+  .nav-call { padding: 0.35rem 0.7rem; font-size: 0.9rem; }
   .nav-mob-hide { display: none; }
+}
+
+/* Phones: the wordmark and the phone number are the whole header. Anything
+   else at this type size pushes the row off the edge. */
+@media (max-width: 460px) {
+  .nav a:not(.nav-call) { display: none; }
 }
 
 /* -------------------------------------------------------------------------
@@ -202,8 +228,19 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
   display: flex; align-items: center;
 }
 .band--tall { min-height: 100svh; }
-.band--flat { background: var(--ground); }
-.band--lift { background: var(--ground-lift); }
+.band, .band--flat { background: color-mix(in srgb, var(--ground) 55%, transparent); }
+.band--lift { background: color-mix(in srgb, var(--ground-lift) 70%, transparent); }
+
+/* Section divider: a yellow hairline that draws itself across the seam as the
+   section engages. Same scaleX pattern as .link::after. */
+.band + .band::before {
+  content: ''; position: absolute; z-index: 3;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 1100ms var(--ease) 120ms;
+}
+.band + .band.is-active::before { transform: scaleX(1); }
 
 /* full-bleed background image, parallax-shifted by JS via --py */
 .band__bg {
@@ -240,6 +277,23 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
   filter: blur(14px);
   transition: opacity var(--slow) var(--ease), transform var(--slow) var(--ease), filter var(--slow) var(--ease);
 }
+/* rises out of the section's bottom edge and sits OVER the cards (z-index 3
+   beats .band__inner's 2). pointer-events: none keeps the cards clickable
+   through it. */
+.cutout--bottom {
+  /* The source frame cuts the cup off at both sides, so those edges are
+     masked out rather than hidden by an ever-deeper bleed. z-index 1 puts it
+     under .band__inner (2): the cards overlap the cup, not the other way. */
+  /* the cup's apex sits at 39% of the frame, not 50%, so the image is anchored
+     left and run wide to put that apex on the section's centre line */
+  left: 0; bottom: -44vw;
+  z-index: 1;
+  width: 128vw;
+  filter: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  transform: translateY(34%) scale(0.97);
+}
 .cutout--right  { right: clamp(-3rem, -1vw, 1rem); bottom: -8%; transform: translateX(22%) scale(0.97); }
 .cutout--left   { left:  clamp(-4rem, -2vw, 0rem); bottom: -12%; transform: translateX(-22%) scale(0.97); }
 .band.is-active .cutout { opacity: 1; filter: blur(0); transform: translateX(0) scale(1); }
@@ -247,6 +301,8 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 @media (max-width: 780px) {
   .cutout { width: clamp(180px, 52vw, 300px); opacity: 0.42; }
   .band.is-active .cutout { opacity: 0.42; }
+  /* the bottom cut-out's bleed is tied to its width, so it keeps its own */
+  .cutout--bottom { width: 128vw; }
 }
 
 /* -------------------------------------------------------------------------
@@ -276,25 +332,15 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 .is-active .rise-1 { transition-delay: 220ms; }
 .is-active .rise-2 { transition-delay: 320ms; }
 .is-active .rise-3 { transition-delay: 420ms; }
+.is-active .rise-4 { transition-delay: 520ms; }
 
 /* -------------------------------------------------------------------------
    Hero
    ------------------------------------------------------------------------- */
-.hero h1 { font-size: var(--fs-mega); }
-.hero .standfirst {
-  font-size: var(--fs-h3);
-  font-weight: 300;
-  color: var(--ink);
-  max-width: 34ch;
-  margin-top: 1.75rem;
-  line-height: 1.4;
-}
-.hero .where {
-  font-size: var(--fs-small);
-  color: var(--taupe);
-  margin: 0 0 1.5rem;
-  letter-spacing: 0.01em;
-}
+/* Longer headline than --fs-mega was drawn for: sized so the widest line
+   fits one screen line at every width. */
+.hero h1 { font-size: clamp(2.1rem, 6.4vw, 5rem); }
+.hero .band__col { max-width: none; }
 
 /* Title sequence: a curtain wipe clears, then the lines rise.
    Plays once per browser session (sessionStorage), never on return scroll. */
@@ -308,8 +354,6 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 .no-seq .curtain { display: none; }
 @keyframes curtain { to { transform: scaleY(0); } }
 
-.seq .hero__media { animation: settle 2600ms var(--ease) forwards; }
-@keyframes settle { from { transform: scale(1.08); } to { transform: scale(1); } }
 
 /* -------------------------------------------------------------------------
    Cards. The frame never moves; the image scales inside it.
@@ -320,14 +364,24 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
   margin-top: clamp(2.5rem, 6vw, 4.5rem);
 }
 
+/* The whole card is the link, so the box is the hit area instead of lifting
+   on hover. The .link inside is a span that still carries the underline. */
 .card {
+  display: block;
+  position: relative;
+  color: inherit; text-decoration: none;
   background: color-mix(in srgb, var(--ground-lift) 88%, transparent);
   border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
   border-radius: var(--radius);
   padding: clamp(1.5rem, 2.6vw, 2.25rem);
-  transition: transform 520ms var(--ease), border-color 380ms var(--ease);
+  cursor: pointer;
+  transition: background-color 380ms var(--ease), border-color 380ms var(--ease);
 }
-.card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.card:hover, .card:focus-visible {
+  background: var(--ground-lift);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.card:hover .link::after, .card:focus-visible .link::after { transform: scaleX(1); }
 .card h3 { font-size: var(--fs-h3); margin-bottom: 0.75rem; }
 .card p { font-size: 0.9375rem; color: var(--taupe); margin-bottom: 0; }
 .card .link { display: inline-block; margin-top: 1.15rem; font-size: var(--fs-small); font-weight: 500; }
@@ -391,7 +445,7 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
    Footer. Every link goes somewhere real.
    ------------------------------------------------------------------------- */
 .site-foot {
-  background: var(--ground);
+  background: color-mix(in srgb, var(--ground) 68%, transparent);
   border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
   padding: clamp(3.5rem, 7vw, 5.5rem) var(--gutter) 2rem;
 }
@@ -415,6 +469,140 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
   border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; justify-content: space-between;
   font-size: var(--fs-small); color: var(--taupe);
+}
+
+/* -------------------------------------------------------------------------
+   Video hero (home page only, .hero--video).
+
+   The clip is the Champs logo animating a pour: a white disc on a black
+   square, with a generator watermark parked in the dead corner. Two moves
+   make it belong to the page rather than sit on it -- the square is masked
+   to the disc (killing the surround and the watermark), and a cream layer is
+   multiplied over it so the clip's white field becomes the section's own
+   ground while the brown artwork only warms. Both are lifted from the
+   approved Claude Design comp.
+
+   Because that ground is cream, this one section inverts the site palette:
+   coffee brown ink instead of cream ink. #3E2617 on #FFFDD0 is 9.0:1 and
+   #6B4A31 on #FFFDD0 is 7.6:1, so both clear AA comfortably.
+   ------------------------------------------------------------------------- */
+.hero--video {
+  /* The disc's diameter and how far right of centre it finally sits.
+     The logo fills its circle almost edge to edge -- the wordmark sits at
+     98% of the radius -- so the disc can never be allowed to clip: every
+     term here is a real limit, not padding. 85svh keeps the portafilter
+     clear of the fixed header, and the shift is deliberately a smaller
+     fraction of the viewport than the disc, so on narrower screens the
+     disc slides back toward centre instead of off the right edge. */
+  --disc: min(58vw, 800px, 85svh);
+  --disc-shift: min(18vw, 320px);
+  /* The band starts at the top of the page and the header floats over it, so
+     centring the disc on the band tucks the portafilter under the nav. Drop
+     it by about half the header's height to centre it in the space actually
+     visible below the nav instead. 44px clears the header at every viewport
+     height from 700px up, while staying inside the band's bottom edge (the
+     window is roughly 26px-58px at 700px tall, widening as it gets taller). */
+  --disc-drop: 44px;
+
+  background: var(--cream-ground);
+  color: var(--coffee);
+}
+.hero--video h1 { color: var(--coffee-deep); }
+.hero--video :focus-visible { outline-color: var(--coffee-deep); }
+
+/* the accent yellow is drawn for the dark ground and goes muddy on cream, so
+   the CTA pair is restated in brown here */
+.hero--video .btn-primary { background: var(--coffee-deep); color: var(--cream-ground); }
+.hero--video .btn-primary:hover { background: var(--coffee); }
+.hero--video .btn-ghost { border-color: color-mix(in srgb, var(--coffee) 45%, transparent); color: var(--coffee-deep); }
+.hero--video .btn-ghost:hover { border-color: var(--coffee-deep); }
+
+/* keep the copy clear of the disc's final resting place */
+.hero--video .band__col { max-width: 50%; }
+
+/* The move: the disc is centred on the content box, then glides right. Both
+   states are one transform on one element, so it is a single composited
+   property and the start pose is a true centre rather than an approximation
+   of one. */
+.hero--video .hero__media {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: var(--disc);
+  aspect-ratio: 1;
+  pointer-events: none;
+  transform: translate(-50%, calc(-50% + var(--disc-drop))) scale(0.96);
+  opacity: 0;
+  transition:
+    transform 1500ms var(--ease) 200ms,
+    opacity 900ms var(--ease) 200ms;
+}
+.hero--video.is-ready .hero__media {
+  transform: translate(calc(-50% + var(--disc-shift)), calc(-50% + var(--disc-drop)));
+  opacity: 1;
+}
+
+/* A composited <video> is not reliably clipped by overflow + border-radius,
+   so the circle is cut with a mask, which does clip it. The 0.5% feather
+   kills the stair-stepping a hard mask edge leaves on a big circle. */
+.hero__disc {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  /* closest-side matters: a bare `circle` sizes itself to the farthest CORNER,
+     which would put the stops on a 382px radius in a 540px box and cut a
+     circle far smaller than the element. */
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 99.3%, transparent 100%);
+  mask-image: radial-gradient(circle closest-side, #000 99.3%, transparent 100%);
+}
+/* The source is a white logo disc inside a black ring. Measured against the
+   frames: the wordmark reaches 93.4% of the half-width and the ring starts at
+   99.4%, so any scale between 100.6% and 107.1% both hides the ring and keeps
+   the logo whole. 104% sits in the middle of that window, roughly 9px of
+   margin either way at the desktop size. The comp's 106% is inside the window
+   too, but leaves almost nothing on the wordmark side. */
+.hero__video, .hero__tint {
+  position: absolute;
+  left: -2%; top: -2%;
+  width: 104%; height: 104%;
+  object-fit: cover;
+  filter: brightness(1.035) saturate(1.04);
+}
+/* the clip's white becomes the section's cream; its browns just warm. Sits
+   over both clips, so the handover underneath it is invisible. */
+.hero__tint {
+  background: var(--cream-ground);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  filter: none;
+}
+
+/* The handover. Both clips are stacked and decoded; only which one is opaque
+   changes, and it changes in one frame with no transition -- a fade would
+   cross-expose two different frames of the same artwork and read as a ghost. */
+.hero__video--tail { opacity: 0; }
+.hero--video.is-tail .hero__video--pour { opacity: 0; }
+.hero--video.is-tail .hero__video--tail { opacity: 1; }
+
+/* The copy needs no gate of its own: .lines .ln and .rise are already hidden
+   until their band turns .is-active, so site.js simply withholds .is-active
+   from this one hero until the clip is ready. */
+
+@media (max-width: 860px) {
+  /* no room to sit beside the copy: the disc stacks above it and drops the
+     sideways move, keeping only the fade-up */
+  .hero--video { --disc-shift: 0px; }
+  .hero--video .band__inner { display: flex; flex-direction: column; }
+  .hero--video .band__col { max-width: none; }
+  .hero--video .hero__media {
+    position: relative;
+    left: auto; top: auto;
+    width: min(88vw, 420px);
+    margin: 0 auto clamp(1.5rem, 5vw, 2.5rem);
+    transform: translateY(20px) scale(0.96);
+  }
+  .hero--video.is-ready .hero__media { transform: none; }
 }
 
 /* -------------------------------------------------------------------------
