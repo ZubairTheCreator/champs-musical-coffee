@@ -265,6 +265,19 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
   }
 }
 
+/* Photo-backed bands. The photo sits under a flat tint: cream on the page
+   heroes (which then invert to brown ink, same as the video hero), coffee
+   brown everywhere else so cream ink keeps its contrast. */
+.band__scrim--coffee { background: color-mix(in srgb, var(--coffee) 78%, transparent); }
+.band__scrim--cream  { background: color-mix(in srgb, var(--cream-ground) 84%, transparent); }
+.band--cream { color: var(--coffee); }
+.band--cream h1, .band--cream h2 { color: var(--coffee-deep); }
+.band--cream :focus-visible { outline-color: var(--coffee-deep); }
+.band--cream .btn-primary { background: var(--coffee-deep); color: var(--cream-ground); }
+.band--cream .btn-primary:hover { background: var(--coffee); }
+.band--cream .btn-ghost { border-color: color-mix(in srgb, var(--coffee) 45%, transparent); color: var(--coffee-deep); }
+.band--cream .btn-ghost:hover { border-color: var(--coffee-deep); }
+
 .band__inner { position: relative; z-index: 2; width: 100%; max-width: 1240px; margin: 0 auto; }
 .band__col { max-width: 52ch; }
 
