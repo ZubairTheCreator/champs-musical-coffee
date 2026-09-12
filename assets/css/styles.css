@@ -263,6 +263,7 @@ p { margin: 0 0 1.15rem; max-width: var(--measure); }
 .band__scrim--coffee { background: color-mix(in srgb, var(--coffee) 78%, transparent); }
 .band__scrim--cream  { background: color-mix(in srgb, var(--cream-ground) 84%, transparent); }
 .band__scrim--coffee-light { background: color-mix(in srgb, var(--coffee) 50%, transparent); }
+.band__scrim--cream-60 { background: color-mix(in srgb, var(--cream-ground) 60%, transparent); }
 .band--cream { color: var(--coffee); }
 .band--cream h1, .band--cream h2 { color: var(--coffee-deep); }
 .band--cream :focus-visible { outline-color: var(--coffee-deep); }
