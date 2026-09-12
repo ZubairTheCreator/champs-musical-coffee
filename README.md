@@ -1,6 +1,6 @@
 # Champs Musical Coffee Shop Productions
 
-Five-page site for a coffee shop and mobile coffee catering business in Eerste River, Cape Town.
+Five-page site for a coffee shop and mobile coffee catering business in Stellenbosch, Cape Town.
 Static HTML and CSS, no build step. Open `index.html`, or serve the folder to exercise `404.html`.
 
 ```bash
